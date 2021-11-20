@@ -2,7 +2,6 @@
 	import Console from "$lib/components/gameUI/console.svelte";
 	import MouseOverInfo from "$lib/components/gameUI/mouseOverInfo.svelte";
 	import Game from "$lib/stores/gameStore";
-	import Metrics from "$lib/stores/metricStore";
 	import { onMount } from "svelte";
 
 	let gameContainer;

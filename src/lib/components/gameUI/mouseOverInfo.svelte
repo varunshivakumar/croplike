@@ -19,6 +19,7 @@
     {:else}
         <p class="text-purple-400">Mouseover game map</p>
         <p class="text-purple-400">for basic tile info</p>
+        <p class="text-purple-400">FOV pending info inc.</p>
     {/if}
 </section>
 
