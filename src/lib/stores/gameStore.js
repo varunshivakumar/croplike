@@ -33,7 +33,7 @@ const dieselEngine = writable({
     },
     // Start with a locked game
     locked: true,
-    maps: new Maps({ mapHeight: 34, mapWidth: 34 }),
+    map: new Maps({ mapHeight: 34, mapWidth: 34 }),
     player: null,
     // Engine Mechanics
     EngineLock() {
@@ -82,7 +82,13 @@ const dieselEngine = writable({
             let mouseInputsCoords = this.display.eventToPosition(inputData)
             if (mouseInputsCoords[0] >= 0 && mouseInputsCoords[1] >= 0) {
                 const offsets = this.renderGetOffsets();
-                Metrics.addMouseEvenData(this.maps.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]])
+                if (this.player.x === offsets.x + mouseInputsCoords[0] && this.player.y === offsets.y + mouseInputsCoords[1]) {
+                    Metrics.addMouseEvenData({ explored: "yas", name: "it's u", walkable: "yas" })
+                } else if (!this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]].explored) {
+                    Metrics.addMouseEvenData({ explored: "false", name: "?", walkable: "?" })
+                }else {
+                    Metrics.addMouseEvenData(this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]])
+                }
             } else {
                 Metrics.addMouseEvenData({ explored: "mouseover", name: "mouseover", walkable: "mouseover" })
             }
@@ -99,7 +105,7 @@ const dieselEngine = writable({
             const { x, y } = this.player;
             const newX = x + dx;
             const newY = y + dy;
-            if (this.player.tryMove(newX, newY, dx, dy)) {
+            if (this.player.tryMove(this.map, newX, newY)) {
                 this.renderDisplay();
                 inputType === 0
                     ? Metrics.addTotalKeyboardEvents()
@@ -114,18 +120,19 @@ const dieselEngine = writable({
     },
     renderDisplay() {
         const { height, width } = this.displayOptions;
-        const { char, facing, fg, map, x, y } = this.player;
+        const { char, facing, fg, x, y } = this.player;
         const displayB = this.display;
         const lightpasses = (x, y) => {
-            return map.tiles[x] !== undefined && map.tiles[x][y] !== undefined
-                ? map.tiles[x][y].lightPasses
+            return this.map.tiles[x] !== undefined && this.map.tiles[x][y] !== undefined
+                ? this.map.tiles[x][y].lightPasses
                 : false;
         };
         const fov = new FOV.RecursiveShadowcasting(lightpasses);
         const offsets = this.renderGetOffsets();
+        
         for (let x = offsets.x; x < offsets.x + width; x++) {
             for (let y = offsets.y; y < offsets.y + height; y++) {
-                let tile = this.maps.tiles[x][y];
+                let tile = this.map.tiles[x][y];
                 this.display.draw(
                     x - offsets.x,
                     y - offsets.y,
@@ -134,27 +141,30 @@ const dieselEngine = writable({
                     tile.explored ? tile.bg : ColorSwatch.bgDark
                 );
             }
-        }
-        fov.compute180(
+        }       
+
+        fov.compute90(
             x,
             y,
-            8,
+            5,
             facing,
             (
                 x,
                 y,
-                r
+                r,
             ) => {
                 const fovX = x - offsets.x;
                 const fovY = y - offsets.y;
+
                 if (
-                    map.tiles[x] !== undefined &&
-                    map.tiles[x][y] !== undefined
+                    this.map.tiles[x] !== undefined &&
+                    this.map.tiles[x][y] !== undefined
                 ) {
-                    let ch = r ? map.tiles[x][y].char : "@";
-                    let color = map.tiles[x][y] ? ColorSwatch.red[4] : fg;
+                    let ch = r ? this.map.tiles[x][y].char : "@";
+                    let color = this.map.tiles[x][y] ? ColorSwatch.red[4] : fg;
                     displayB.draw(fovX, fovY, ch, color);
-                }
+                    this.map.tiles[x][y].explored = true
+                } 
             }
         );
         // draw player last
@@ -163,11 +173,11 @@ const dieselEngine = writable({
     },
     renderGetOffsets() {
         const { height, width } = this.displayOptions;
-        const { map, x, y } = this.player;
+        const { x, y } = this.player;
         let topLeftX = Math.max(0, x - width / 2);
-        topLeftX = Math.min(topLeftX, map.mapWidth - width);
+        topLeftX = Math.min(topLeftX, this.map.mapWidth - width);
         let topLeftY = Math.max(0, y - height / 2);
-        topLeftY = Math.min(topLeftY, map.mapHeight - height);
+        topLeftY = Math.min(topLeftY, this.map.mapHeight - height);
         return {
             x: topLeftX,
             y: topLeftY,
@@ -188,7 +198,6 @@ const dieselEngine = writable({
         this.player = new Entity({
             char: "@",
             fg: ColorSwatch.red[1],
-            map: this.maps,
             x: 13,
             y: 14,
         });
