@@ -57,7 +57,7 @@ const dieselEngine = writable({
     },
     handleInput(inputType, inputData) {
         if (inputType === "keydown") {
-            Metrics.addMouseEvenData({ name: "need input", walkable: "need input" })
+            Metrics.addEventData(this.map.tiles[this.player.x][this.player.y])
             Metrics.totalKeyboardEvents; // Total Keyboard Event Tracking
             // West
             if (inputData.key === "ArrowLeft") this.move(-1, 0, 6, 0);
@@ -81,16 +81,17 @@ const dieselEngine = writable({
         } else if (inputType === "mousemove") {
             let mouseInputsCoords = this.display.eventToPosition(inputData)
             if (mouseInputsCoords[0] >= 0 && mouseInputsCoords[1] >= 0) {
+                console.log(mouseInputsCoords)
                 const offsets = this.renderGetOffsets();
                 if (this.player.x === offsets.x + mouseInputsCoords[0] && this.player.y === offsets.y + mouseInputsCoords[1]) {
-                    Metrics.addMouseEvenData({ explored: "yas", name: "it's u", walkable: "yas" })
+                    Metrics.addEventData({ explored: "yas", name: "it's u", walkable: "yas" })
                 } else if (!this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]].explored) {
-                    Metrics.addMouseEvenData({ explored: "false", name: "?", walkable: "?" })
-                }else {
-                    Metrics.addMouseEvenData(this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]])
+                    Metrics.addEventData({ explored: "false", name: "?", walkable: "?" })
+                } else {
+                    Metrics.addEventData(this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]])
                 }
             } else {
-                Metrics.addMouseEvenData({ explored: "mouseover", name: "mouseover", walkable: "mouseover" })
+                Metrics.addEventData({ explored: "move or mouseover", name: "move or mouseover", walkable: "move or mouseover" })
             }
         }
     },
@@ -129,7 +130,7 @@ const dieselEngine = writable({
         };
         const fov = new FOV.RecursiveShadowcasting(lightpasses);
         const offsets = this.renderGetOffsets();
-        
+
         for (let x = offsets.x; x < offsets.x + width; x++) {
             for (let y = offsets.y; y < offsets.y + height; y++) {
                 let tile = this.map.tiles[x][y];
@@ -141,7 +142,7 @@ const dieselEngine = writable({
                     tile.explored ? tile.bg : ColorSwatch.bgDark
                 );
             }
-        }       
+        }
 
         fov.compute90(
             x,
@@ -164,7 +165,7 @@ const dieselEngine = writable({
                     let color = this.map.tiles[x][y] ? ColorSwatch.red[4] : fg;
                     displayB.draw(fovX, fovY, ch, color);
                     this.map.tiles[x][y].explored = true
-                } 
+                }
             }
         );
         // draw player last

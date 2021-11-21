@@ -30,7 +30,7 @@ const Metrics = {
             return self
         })
     },
-    addMouseEvenData: mouseObj => {
+    addEventData: mouseObj => {
         metricsData.update(self => {
             self.mouseEventData = { ...mouseObj }
             return self

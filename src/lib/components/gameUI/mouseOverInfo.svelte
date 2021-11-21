@@ -5,15 +5,15 @@
 <section class="mounseOverInfo flex flex-col mb-4 text-xs text-white">
     {#if $Metrics.mouseEventData.name}
         <p>
-            <span class="text-purple-400">Tile Name</span>: {$Metrics
+            <span class="text-purple-400">Name</span>:{$Metrics
                 .mouseEventData.name}
         </p>
         <p>
-            <span class="text-purple-400">Is Explored</span>: {$Metrics
+            <span class="text-purple-400">Explored</span>:{$Metrics
                 .mouseEventData.explored}
         </p>
         <p>
-            <span class="text-purple-400">Is Walkable</span>: {$Metrics
+            <span class="text-purple-400">Walkable</span>:{$Metrics
                 .mouseEventData.walkable}
         </p>
     {:else}
@@ -26,6 +26,6 @@
 <style>
     .mounseOverInfo {
         font-family: PressStart2P;
-        width: 288px;
+        width: 330px;
     }
 </style>
