@@ -52,8 +52,8 @@ const dieselEngine = writable({
     EngineUpdate() {
         this.EngineLock();
     },
-    handleMouseInput(e) {
-        this.display.eventToPosition(e)
+    handleInputClickMove(dx, dy, d, inputType) {
+        d === "player" ? this.move(dx, dy, this.player.facing, inputType) : this.move(dx, dy, d, inputType)
     },
     handleInput(inputType, inputData) {
         if (inputType === "keydown") {
@@ -207,6 +207,15 @@ const dieselEngine = writable({
 
 const Game = {
     subscribe: dieselEngine.subscribe,
+    clickMove: (dx, dy, d, inputType) => {
+        dieselEngine.update(self => {
+            self.handleInputClickMove(dx, dy, d, inputType)
+
+            return self
+        })
+    },
+
+    
 };
 
 export default Game;

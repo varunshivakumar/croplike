@@ -8,7 +8,7 @@ const metricsData = writable({
     debugData: ["All clear..."], // future me will use this to keep track of t
     mouseEventData: {},
     totalKeyboardEvents: 0,
-    totalMouseEvents: "N/A",
+    totalMouseEvents: 0,
     totalMoves: 0
 });
 
