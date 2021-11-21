@@ -81,7 +81,6 @@ const dieselEngine = writable({
         } else if (inputType === "mousemove") {
             let mouseInputsCoords = this.display.eventToPosition(inputData)
             if (mouseInputsCoords[0] >= 0 && mouseInputsCoords[1] >= 0) {
-                console.log(mouseInputsCoords)
                 const offsets = this.renderGetOffsets();
                 if (this.player.x === offsets.x + mouseInputsCoords[0] && this.player.y === offsets.y + mouseInputsCoords[1]) {
                     Metrics.addEventData({ explored: "yas", name: "it's u", walkable: "yas" })
