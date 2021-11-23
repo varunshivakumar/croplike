@@ -57,7 +57,7 @@ const dieselEngine = writable({
     },
     handleInput(inputType, inputData) {
         if (inputType === "keydown") {
-            Metrics.addEventData(this.map.tiles[this.player.x][this.player.y])
+            Metrics.addEventData(this.map.tiles[this.player.pos[0].x][this.player.pos[0].y])
             Metrics.totalKeyboardEvents; // Total Keyboard Event Tracking
             // West
             if (inputData.key === "ArrowLeft") this.move(-1, 0, 6, 0);
@@ -82,7 +82,7 @@ const dieselEngine = writable({
             let mouseInputsCoords = this.display.eventToPosition(inputData)
             if (mouseInputsCoords[0] >= 0 && mouseInputsCoords[1] >= 0) {
                 const offsets = this.renderGetOffsets();
-                if (this.player.x === offsets.x + mouseInputsCoords[0] && this.player.y === offsets.y + mouseInputsCoords[1]) {
+                if (this.player.pos[0].x === offsets.x + mouseInputsCoords[0] && this.player.pos[0].y === offsets.y + mouseInputsCoords[1]) {
                     Metrics.addEventData({ explored: "yas", name: "it's u", walkable: "yas" })
                 } else if (!this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]].explored) {
                     Metrics.addEventData({ explored: "false", name: "?", walkable: "?" })
@@ -102,10 +102,7 @@ const dieselEngine = writable({
                 : Metrics.addTotalMouseEvents()
             this.renderDisplay();
         } else {
-            const { x, y } = this.player;
-            const newX = x + dx;
-            const newY = y + dy;
-            if (this.player.tryMove(this.map, newX, newY)) {
+            if (this.player.tryMove(this.map, dx, dy)) {
                 this.renderDisplay();
                 inputType === 0
                     ? Metrics.addTotalKeyboardEvents()
@@ -120,7 +117,7 @@ const dieselEngine = writable({
     },
     renderDisplay() {
         const { height, width } = this.displayOptions;
-        const { char, facing, fg, x, y } = this.player;
+        const { char, facing, fg, pos } = this.player;
         const displayB = this.display;
         const lightpasses = (x, y) => {
             return this.map.tiles[x] !== undefined && this.map.tiles[x][y] !== undefined
@@ -144,8 +141,8 @@ const dieselEngine = writable({
         }
 
         fov.compute90(
-            x,
-            y,
+            pos[0].x,
+            pos[0].y,
             5,
             facing,
             (
@@ -167,16 +164,18 @@ const dieselEngine = writable({
                 }
             }
         );
-        // draw player last
-        this.display.draw(x - offsets.x, y - offsets.y, char, fg);
-        // draw structure if it exist
+        // draw player last   
+        for (let i = 0; i < this.player.pos.length; i++) {
+            // draw structure if it exist
+            this.display.draw(pos[i].x - offsets.x, pos[i].y - offsets.y, char, fg);
+        }
     },
     renderGetOffsets() {
         const { height, width } = this.displayOptions;
-        const { x, y } = this.player;
-        let topLeftX = Math.max(0, x - width / 2);
+        const { pos } = this.player;
+        let topLeftX = Math.max(0, pos[0].x - width / 2);
         topLeftX = Math.min(topLeftX, this.map.mapWidth - width);
-        let topLeftY = Math.max(0, y - height / 2);
+        let topLeftY = Math.max(0, pos[0].y - height / 2);
         topLeftY = Math.min(topLeftY, this.map.mapHeight - height);
         return {
             x: topLeftX,
@@ -198,8 +197,9 @@ const dieselEngine = writable({
         this.player = new Entity({
             char: "@",
             fg: ColorSwatch.red[1],
-            x: 13,
-            y: 14,
+            pos: [{ x: 13, y: 14 }, { x: 12, y: 14 }, { x: 14, y: 14 },
+            { x: 13, y: 13 }, { x: 12, y: 13 }, { x: 14, y: 13 },
+            { x: 13, y: 15 }, { x: 12, y: 15 }, { x: 14, y: 15 },]
         });
         this.renderDisplay()
     }
@@ -210,12 +210,11 @@ const Game = {
     clickMove: (dx, dy, d, inputType) => {
         dieselEngine.update(self => {
             self.handleInputClickMove(dx, dy, d, inputType)
-
             return self
         })
     },
 
-    
+
 };
 
 export default Game;

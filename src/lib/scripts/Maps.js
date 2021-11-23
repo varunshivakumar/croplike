@@ -37,10 +37,6 @@ class Maps {
       }
     }
   }
-  outOfBounds(x, y) {
-    // Stops the player from going off screen
-    return x < 0 || y < 0 || x >= this.mapWidth || y >= this.mapHeight;
-  }
 }
 
 export default Maps;
