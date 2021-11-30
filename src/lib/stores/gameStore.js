@@ -1,12 +1,9 @@
 /**
  * Future work:
  * - Ryan's Private AI and idea
- * - Map Render, Utility for Map / Enity / Object Renders/ 
- * - FOV / Exploration
- * - Movement register idea?
- * - For clicks / keyboard metric.
- * - Grid on map to align with support for finding info. Mouse over. Highlghts etc.
+ * - Display Class = * - Map Render, Utility for Map / Enity / Object Renders/ 
  * - https://tympanus.net/Tutorials/CustomCursors/index5.html
+ * -  Tick fn with time utitlity and color shading
  */
 
 import { Display, FOV } from "rot-js";
