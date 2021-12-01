@@ -9,7 +9,7 @@ const Utility = {
     if (x === -1 && y === 0) return "West";
     if (x === -1 && y === -1) return "North West";
     if (x === 0 && y === 0) return "Waited";
-  },
+  }
 };
 
 export default Utility;

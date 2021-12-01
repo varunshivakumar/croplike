@@ -7,6 +7,7 @@ const metricsData = writable({
     ],
     debugData: ["All clear..."], // future me will use this to keep track of t
     mouseEventData: {},
+    time: 1,
     totalKeyboardEvents: 0,
     totalMouseEvents: 0,
     totalMoves: 0
@@ -33,6 +34,12 @@ const Metrics = {
     addEventData: mouseObj => {
         metricsData.update(self => {
             self.mouseEventData = { ...mouseObj }
+            return self
+        })
+    },
+    addTOD: time => {
+        metricsData.update(self => {
+            self.time = time
             return self
         })
     },

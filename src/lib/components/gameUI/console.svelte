@@ -18,6 +18,9 @@
             <span class="text-blue-400">Total Moves</span>: {$Metrics.totalMoves}
         </p>
         <p>
+            <span class="text-blue-400">TOD</span>: {$Metrics.time}
+        </p>
+        <p>
             {#if !debug}Console{:else}Debug{/if}
         </p>
         <p class="mb-4 text-green-400" on:click={() => (debug = !debug)}>

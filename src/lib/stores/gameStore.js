@@ -1,17 +1,29 @@
 /**
  * Future work:
  * - Ryan's Private AI and idea
- * - Display Class = * - Map Render, Utility for Map / Enity / Object Renders/ 
+ * - Display Class = * - Map Render, Utility for Map / Enity / Object Renders/ (No to this right now.)
  * - https://tympanus.net/Tutorials/CustomCursors/index5.html
- * -  Tick fn with time utitlity and color shading
- */
+ * -- only actions unlock the engine and only actions lock the engine
+ * -- actions cause entity reactions
+
+ * ...v.....
+ * ....v....
+ * ...xvx...  This is an example of large creature.
+ * .vvxxvv..  The vv represent legs.
+ * ..xxxx...  The single v represents a tail segment.
+ * .vvxxvv..
+ * ..xxxx...
+ * ...xx....
+ 
+*/
+
+
 
 import { Display, FOV } from "rot-js";
 import ColorSwatch from "./../scripts/ColorSwatch";
 import Entity from "./../scripts/Entity";
 import Maps from "./../scripts/Maps";
 import Utility from "./../scripts/Utility";
-
 
 import Metrics from "../stores/metricStore";
 import { writable } from "svelte/store";
@@ -28,6 +40,8 @@ const dieselEngine = writable({
         spacing: 1.2,
         width: 24,
     },
+    gameTime: 1,
+    gameTimeFlow: true,
     // Start with a locked game
     locked: true,
     map: new Maps({ mapHeight: 34, mapWidth: 34 }),
@@ -47,6 +61,9 @@ const dieselEngine = writable({
         this.EngineUpdate();
     },
     EngineUpdate() {
+        // Handle Reactions to player moves
+        this.tick()
+        this.renderDisplay();
         this.EngineLock();
     },
     handleInputClickMove(dx, dy, d, inputType) {
@@ -91,7 +108,9 @@ const dieselEngine = writable({
             }
         }
     },
+    // Actions
     move(dx, dy, d, inputType) {
+        // Looking will not add to engine for now
         if (this.player.facing !== d) {
             this.player.facing = d;
             inputType === 0
@@ -100,18 +119,34 @@ const dieselEngine = writable({
             this.renderDisplay();
         } else {
             if (this.player.tryMove(this.map, dx, dy)) {
-                this.renderDisplay();
+                // Console Logging
                 inputType === 0
                     ? Metrics.addTotalKeyboardEvents()
                     : Metrics.addTotalMouseEvents()
                 Metrics.addTotalMoves(); // Total Moves Tracking
                 Metrics.addConsole(
                     "you moved: " + Utility.returnDirection(dx, dy)
-                ); // Console Logging
+                )
+                // Handle reactions
                 this.EngineUnlock("move");
             } else Metrics.addDebug("tried to move, did not work"); // Error Logging
         }
     },
+    // Reactions 
+    tick() {
+        if (this.gameTimeFlow) { 
+            if (this.gameTime >= 9) {
+                this.gameTimeFlow = false
+                
+            } else this.gameTime++
+        } else { 
+            if (this.gameTime <= 1) {
+                this.gameTimeFlow = true
+            } else this.gameTime--
+        }      
+        Metrics.addTOD(this.gameTime)  
+    },
+    // Renders
     renderDisplay() {
         const { height, width } = this.displayOptions;
         const { char, facing, fg, pos } = this.player;
@@ -127,20 +162,26 @@ const dieselEngine = writable({
         for (let x = offsets.x; x < offsets.x + width; x++) {
             for (let y = offsets.y; y < offsets.y + height; y++) {
                 let tile = this.map.tiles[x][y];
+                let fgColor = tile.fg
+                if (this.gameTime > 2) fgColor = ColorSwatch.purple[9]
+                if (this.gameTime > 7) fgColor = ColorSwatch.blueGray[9]
                 this.display.draw(
                     x - offsets.x,
                     y - offsets.y,
                     tile.char,
-                    tile.explored ? tile.fg : ColorSwatch.bgDark,
+                    tile.explored ? fgColor : ColorSwatch.bgDark,
                     tile.explored ? tile.bg : ColorSwatch.bgDark
                 );
             }
         }
+        let fovTime = 8
+        if (this.gameTime > 2) fovTime = 6;
+        if (this.gameTime > 7) fovTime = 4;
 
         fov.compute90(
             pos[0].x,
             pos[0].y,
-            5,
+            fovTime,
             facing,
             (
                 x,
@@ -154,8 +195,12 @@ const dieselEngine = writable({
                     this.map.tiles[x] !== undefined &&
                     this.map.tiles[x][y] !== undefined
                 ) {
+                    let fgColor = ColorSwatch.red[5]
+                    if (this.gameTime > 2) fgColor = ColorSwatch.purple[5];
+                    if (this.gameTime > 7) fgColor = ColorSwatch.blue[5];
+
                     let ch = r ? this.map.tiles[x][y].char : "@";
-                    let color = this.map.tiles[x][y] ? ColorSwatch.red[4] : fg;
+                    let color = this.map.tiles[x][y] ? fgColor : fg;
                     displayB.draw(fovX, fovY, ch, color);
                     this.map.tiles[x][y].explored = true
                 }
@@ -193,10 +238,12 @@ const dieselEngine = writable({
         bindEventToScreen("keydown");
         this.player = new Entity({
             char: "@",
-            fg: ColorSwatch.red[1],
-            pos: [{ x: 13, y: 14 }, { x: 12, y: 14 }, { x: 14, y: 14 },
-            { x: 13, y: 13 }, { x: 12, y: 13 }, { x: 14, y: 13 },
-            { x: 13, y: 15 }, { x: 12, y: 15 }, { x: 14, y: 15 },]
+            fg: "#fff",
+            pos: [{ x: 13, y: 14 },]
+            // Add to the array for 3 x 3 player.
+            // { x: 12, y: 14 }, { x: 14, y: 14 },
+            //{ x: 13, y: 13 }, { x: 12, y: 13 }, { x: 14, y: 13 },
+            //{ x: 13, y: 15 }, { x: 12, y: 15 }, { x: 14, y: 15 },]
         });
         this.renderDisplay()
     }
