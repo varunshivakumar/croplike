@@ -3,8 +3,10 @@
  * - Ryan's Private AI and idea
  * - Display Class = * - Map Render, Utility for Map / Enity / Object Renders/ (No to this right now.)
  * - https://tympanus.net/Tutorials/CustomCursors/index5.html
- * -- only actions unlock the engine and only actions lock the engine
+ * -- only Actions unlock the engine and Reactions lock the engine
  * -- actions cause entity reactions
+ * -- Map can only change map, Entity can only change Entity Data. 
+ * 
  * .........
  * ...v.....
  * ....v....
@@ -18,18 +20,17 @@
  
 */
 
-
-
 import { Display, FOV } from "rot-js";
+import { writable } from "svelte/store";
+
+import Actions from "./../scripts/Actions";
 import ColorSwatch from "./../scripts/ColorSwatch";
 import Entity from "./../scripts/Entity";
 import Maps from "./../scripts/Maps";
-import Utility from "./../scripts/Utility";
-
 import Metrics from "../stores/metricStore";
-import { writable } from "svelte/store";
 
 const dieselEngine = writable({
+    actions: Actions,
     display: null,
     displayOptions: {
         bg: ColorSwatch.bgDark,
@@ -68,31 +69,31 @@ const dieselEngine = writable({
         this.EngineLock();
     },
     handleInputClickMove(dx, dy, d, inputType) {
-        d === "player" ? this.move(dx, dy, this.player.facing, inputType) : this.move(dx, dy, d, inputType)
+        d === "player" ? this.actions.move(this.player, dx, dy, this.player.facing, inputType) : this.actions.move(this.player, dx, dy, d, inputType)
     },
     handleInput(inputType, inputData) {
         if (inputType === "keydown") {
             Metrics.addEventData(this.map.tiles[this.player.pos[0].x][this.player.pos[0].y])
             Metrics.totalKeyboardEvents; // Total Keyboard Event Tracking
             // West
-            if (inputData.key === "ArrowLeft") this.move(-1, 0, 6, 0);
+            if (inputData.key === "ArrowLeft") this.actions.move(this.player, -1, 0, 6, 0);
             // East
-            else if (inputData.key === "ArrowRight") this.move(1, 0, 2, 0);
+            else if (inputData.key === "ArrowRight") this.actions.move(this.player, 1, 0, 2, 0);
             // North
-            else if (inputData.key === "ArrowUp") this.move(0, -1, 0, 0);
+            else if (inputData.key === "ArrowUp") this.actions.move(this.player, 0, -1, 0, 0);
             // South
-            else if (inputData.key === "ArrowDown") this.move(0, 1, 4, 0);
+            else if (inputData.key === "ArrowDown") this.actions.move(this.player, 0, 1, 4, 0);
             // North West
-            else if (inputData.keyCode === 36) this.move(-1, -1, 7, 0);
+            else if (inputData.keyCode === 36) this.actions.move(this.player, -1, -1, 7, 0);
             // North East
-            else if (inputData.keyCode === 33) this.move(1, -1, 1, 0);
+            else if (inputData.keyCode === 33) this.actions.move(this.player, 1, -1, 1, 0);
             // South East
-            else if (inputData.keyCode === 34) this.move(1, 1, 3, 0);
+            else if (inputData.keyCode === 34) this.actions.move(this.player, 1, 1, 3, 0);
             // South West
-            else if (inputData.keyCode === 35) this.move(-1, 1, 5, 0);
+            else if (inputData.keyCode === 35) this.actions.move(this.player, -1, 1, 5, 0);
             // Wait
             else if (inputData.keyCode === 12)
-                this.move(0, 0, this.player.facing, 0);
+                this.actions.move(this.player, 0, 0, this.player.facing, 0);
         } else if (inputType === "mousemove") {
             let mouseInputsCoords = this.display.eventToPosition(inputData)
             if (mouseInputsCoords[0] >= 0 && mouseInputsCoords[1] >= 0) {
@@ -109,43 +110,19 @@ const dieselEngine = writable({
             }
         }
     },
-    // Actions
-    move(dx, dy, d, inputType) {
-        // Looking will not add to engine for now
-        if (this.player.facing !== d) {
-            this.player.facing = d;
-            inputType === 0
-                ? Metrics.addTotalKeyboardEvents()
-                : Metrics.addTotalMouseEvents()
-            this.renderDisplay();
-        } else {
-            if (this.player.tryMove(this.map, dx, dy)) {
-                // Console Logging
-                inputType === 0
-                    ? Metrics.addTotalKeyboardEvents()
-                    : Metrics.addTotalMouseEvents()
-                Metrics.addTotalMoves(); // Total Moves Tracking
-                Metrics.addConsole(
-                    "you moved: " + Utility.returnDirection(dx, dy)
-                )
-                // Handle reactions
-                this.EngineUnlock("move");
-            } else Metrics.addDebug("tried to move, did not work"); // Error Logging
-        }
-    },
-    // Reactions 
+    // Time 
     tick() {
-        if (this.gameTimeFlow) { 
+        if (this.gameTimeFlow) {
             if (this.gameTime >= 9) {
                 this.gameTimeFlow = false
-                
+
             } else this.gameTime++
-        } else { 
+        } else {
             if (this.gameTime <= 1) {
                 this.gameTimeFlow = true
             } else this.gameTime--
-        }      
-        Metrics.addTOD(this.gameTime)  
+        }
+        Metrics.addTOD(this.gameTime)
     },
     // Renders
     renderDisplay() {
@@ -240,6 +217,7 @@ const dieselEngine = writable({
         this.player = new Entity({
             char: "@",
             fg: "#fff",
+            map: this.map,
             pos: [{ x: 13, y: 14 },]
             // Add to the array for 3 x 3 player.
             // { x: 12, y: 14 }, { x: 14, y: 14 },
@@ -258,8 +236,18 @@ const Game = {
             return self
         })
     },
-
-
+    engineRender: () => {
+        dieselEngine.update(self => {
+            self.renderDisplay()
+            return self
+        })
+    },
+    engineUnlock: (str) => {
+        dieselEngine.update(self => {
+            self.EngineUnlock(str)
+            return self
+        })
+    },
 };
 
 export default Game;
