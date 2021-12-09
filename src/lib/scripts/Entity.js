@@ -1,3 +1,4 @@
+import Ai from "./Ai";
 import Tiles from "./Tiles";
 
 class Entity extends Tiles {
@@ -5,7 +6,8 @@ class Entity extends Tiles {
     super(properties);
     this.facing = 4;
     this.map = properties.map
-    this.pos = [...properties.pos] || [[0, 0]];
+    this.pos = [...properties.pos] || [{ x: 0, y: 0}];
+    this.ai = new Ai(this)
   }
   // Stops the player from going off screen
   canGoThere(dx, dy) {

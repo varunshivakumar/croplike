@@ -39,9 +39,10 @@ const dieselEngine = writable({
         fontFamily: "'PressStart2P', cursive",
         forceSquareRatio: true,
         height: 24,
-        spacing: 1.2,
+        spacing: 1.1,
         width: 24,
     },
+    entites: [],
     gameTime: 1,
     gameTimeFlow: true,
     // Start with a locked game
@@ -65,6 +66,10 @@ const dieselEngine = writable({
     EngineUpdate() {
         // Handle Reactions to player moves
         this.tick()
+
+        // Temp Entity Action
+        this.entites[0].ai.act()
+
         this.renderDisplay();
         this.EngineLock();
     },
@@ -152,6 +157,7 @@ const dieselEngine = writable({
                 );
             }
         }
+
         let fovTime = 8
         if (this.gameTime > 2) fovTime = 6;
         if (this.gameTime > 7) fovTime = 4;
@@ -181,9 +187,23 @@ const dieselEngine = writable({
                     let color = this.map.tiles[x][y] ? fgColor : fg;
                     displayB.draw(fovX, fovY, ch, color);
                     this.map.tiles[x][y].explored = true
+
+
+                    // Render Entities Temp
+                    let entityTodd = this.entites[0]
+                    if (x === entityTodd.pos[0].x && y === entityTodd.pos[0].y) {
+                        this.display.draw(
+                            entityTodd.pos[0].x - offsets.x,
+                            entityTodd.pos[0].y - offsets.y,
+                            entityTodd.char,
+                            this.map.tiles[entityTodd.pos[0].x][entityTodd.pos[0].y].explored ? entityTodd.fg : ColorSwatch.bgDark,
+                            entityTodd.explored ? entityTodd.bg : ColorSwatch.bgDark);
+
+                    }
                 }
             }
         );
+
         // draw player last   
         for (let i = 0; i < this.player.pos.length; i++) {
             // draw structure if it exist
@@ -218,12 +238,21 @@ const dieselEngine = writable({
             char: "@",
             fg: "#fff",
             map: this.map,
+            name: "player",
             pos: [{ x: 13, y: 14 },]
             // Add to the array for 3 x 3 player.
             // { x: 12, y: 14 }, { x: 14, y: 14 },
             //{ x: 13, y: 13 }, { x: 12, y: 13 }, { x: 14, y: 13 },
             //{ x: 13, y: 15 }, { x: 12, y: 15 }, { x: 14, y: 15 },]
         });
+        this.map.tiles[17][10].walkable = false;
+        this.entites.push(new Entity({
+            char: "T",
+            fg: ColorSwatch.yellow[4],
+            map: this.map,
+            name: "Todd",
+            pos: [{ x: 17, y: 10 },],
+        }))
         this.renderDisplay()
     }
 });

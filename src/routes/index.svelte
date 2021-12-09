@@ -29,39 +29,39 @@
 			>
 				<div
 					on:click={move(-1, -1, 7, 1)}
-					class="screen-control bg-opacity-5 bg-red-400"
+					class="screen-control bg-opacity-0 bg-red-400"
 				/>
 				<div
 					on:click={move(0, -1, 0, 1)}
-					class="screen-control bg-opacity-5 bg-blue-400"
+					class="screen-control bg-opacity-0 bg-blue-400"
 				/>
 				<div
 					on:click={move(1, -1, 1, 1)}
-					class="screen-control bg-opacity-5 bg-green-400"
+					class="screen-control bg-opacity-0 bg-green-400"
 				/>
 				<div
 					on:click={move(-1, 0, 6, 1)}
-					class="screen-control bg-opacity-5 bg-red-400"
+					class="screen-control bg-opacity-0 bg-red-400"
 				/>
 				<div
 					on:click={move(0, 0, "player", 1)}
-					class="screen-control bg-opacity-5 bg-yellow-400"
+					class="screen-control bg-opacity-0 bg-yellow-400"
 				/>
 				<div
 					on:click={move(1, 0, 2, 1)}
-					class="screen-control bg-opacity-5 bg-green-400"
+					class="screen-control bg-opacity-0 bg-green-400"
 				/>
 				<div
 					on:click={move(-1, 1, 5, 1)}
-					class="screen-control bg-opacity-5 bg-red-400"
+					class="screen-control bg-opacity-0 bg-red-400"
 				/>
 				<div
 					on:click={move(0, 1, 4, 1)}
-					class="screen-control bg-opacity-5 bg-blue-400"
+					class="screen-control bg-opacity-0 bg-blue-400"
 				/>
 				<div
 					on:click={move(1, 1, 3, 1)}
-					class="screen-control bg-opacity-5 bg-green-400"
+					class="screen-control bg-opacity-0 bg-green-400"
 				/>
 			</div>
 		</div>
