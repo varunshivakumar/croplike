@@ -107,6 +107,8 @@ const dieselEngine = writable({
                     Metrics.addEventData({ explored: "yas", name: "it's u", walkable: "yas" })
                 } else if (!this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]].explored) {
                     Metrics.addEventData({ explored: "false", name: "?", walkable: "?" })
+                }else if (this.entites[0].pos[0].x === offsets.x + mouseInputsCoords[0] && this.entites[0].pos[0].y === offsets.y + mouseInputsCoords[1]) {
+                    Metrics.addEventData({ explored: "yas", name: "Todd", walkable: "no" })
                 } else {
                     Metrics.addEventData(this.map.tiles[offsets.x + mouseInputsCoords[0]][offsets.y + mouseInputsCoords[1]])
                 }
