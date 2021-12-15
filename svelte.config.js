@@ -8,7 +8,7 @@ const config = {
     adapter: adapter({
 			// default options are shown
 			pages: 'build',
-			assets: 'build',
+			assets: 'build/assets',
 			fallback: null
 		}),
     // hydrate the <div id="svelte"> element in src/app.html
