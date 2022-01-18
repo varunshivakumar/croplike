@@ -75,6 +75,11 @@
 		src: url("./../assets/fonts/PressStart2P-Regular.ttf");
 	}
 
+	@font-face {
+		font-family: ShareTech;
+		src: url("./../assets/fonts/ShareTech-Regular.ttf");
+	}
+
 	.displayOptions {
 		align-items: center;
 		background: #1d1d1d;

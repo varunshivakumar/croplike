@@ -43,7 +43,7 @@
 
 <style>
     .console {
-        font-family: PressStart2P;
+        font-family: ShareTech;
         width: 296px;
     }
 
