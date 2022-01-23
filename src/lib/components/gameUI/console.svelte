@@ -5,7 +5,7 @@
 </script>
 
 <section
-    class="console bottom-0 flex flex-col text-xs text-white top-0"
+    class="console bottom-0 flex flex-col text-white top-0"
 >
     <div class="pl-3 select-none">
         <p>
@@ -28,7 +28,7 @@
         </p>
     </div>
 
-    <div class="consoleScroll border-4 border-white h-full overflow-y-auto p-2 relative rounded-lg text-xs">
+    <div class="consoleScroll border-4 border-white h-full overflow-y-auto p-2 relative rounded-lg">
         {#if !debug}
             {#each $Metrics.consoleData as consoleOutput}
                 <p>{consoleOutput}</p>

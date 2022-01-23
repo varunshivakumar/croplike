@@ -2,18 +2,18 @@
     import Metrics from "$lib/stores/metricStore";
 </script>
 
-<section class="mounseOverInfo flex flex-col mb-4 text-xs text-white">
+<section class="mounseOverInfo flex flex-col mb-4 text-white">
     {#if $Metrics.mouseEventData.name}
         <p>
-            <span class="text-purple-400">Name</span>:{$Metrics
-                .mouseEventData.name}
+            <span class="text-purple-400">Name</span>: {$Metrics.mouseEventData
+                .name}
         </p>
         <p>
-            <span class="text-purple-400">Explored</span>:{$Metrics
+            <span class="text-purple-400">Explored</span>: {$Metrics
                 .mouseEventData.explored}
         </p>
         <p>
-            <span class="text-purple-400">Walkable</span>:{$Metrics
+            <span class="text-purple-400">Walkable</span>: {$Metrics
                 .mouseEventData.walkable}
         </p>
     {:else}
@@ -25,7 +25,7 @@
 
 <style>
     .mounseOverInfo {
-        font-family: PressStart2P;
+        font-family: ShareTech;
         width: 330px;
     }
 </style>

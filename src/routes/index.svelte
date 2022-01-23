@@ -1,86 +1,26 @@
 <script>
-	import Console from "$lib/components/gameUI/console.svelte";
-	import MouseOverInfo from "$lib/components/gameUI/mouseOverInfo.svelte";
-	import Game from "$lib/stores/gameStore";
-	import { onMount } from "svelte";
-
-	let gameContainer;
-
-	let move;
-
-	onMount(() => {
-		$Game.init(gameContainer);
-		move = (dx, dy, d, inputType) => {
-			Game.clickMove(dx, dy, d, inputType);
-		};
-	});
+	import GameDisplay from "$lib/components/gameUI/gameDisplay.svelte";
 </script>
-
-<section>
-	<div class="displayOptions">
-		<MouseOverInfo />
-		<div
-			bind:this={gameContainer}
-			class="border-4 border-white mb-4 relative rounded-lg "
-		>
-			<!-- Screen Control Element -->
-			<div
-				class="absolute inset-0 m-auto z-1 flex flex-wrap justify-between"
-			>
-				<div
-					on:click={move(-1, -1, 7, 1)}
-					class="screen-control bg-opacity-0 bg-red-400"
-				/>
-				<div
-					on:click={move(0, -1, 0, 1)}
-					class="screen-control bg-opacity-0 bg-blue-400"
-				/>
-				<div
-					on:click={move(1, -1, 1, 1)}
-					class="screen-control bg-opacity-0 bg-green-400"
-				/>
-				<div
-					on:click={move(-1, 0, 6, 1)}
-					class="screen-control bg-opacity-0 bg-red-400"
-				/>
-				<div
-					on:click={move(0, 0, "player", 1)}
-					class="screen-control bg-opacity-0 bg-yellow-400"
-				/>
-				<div
-					on:click={move(1, 0, 2, 1)}
-					class="screen-control bg-opacity-0 bg-green-400"
-				/>
-				<div
-					on:click={move(-1, 1, 5, 1)}
-					class="screen-control bg-opacity-0 bg-red-400"
-				/>
-				<div
-					on:click={move(0, 1, 4, 1)}
-					class="screen-control bg-opacity-0 bg-blue-400"
-				/>
-				<div
-					on:click={move(1, 1, 3, 1)}
-					class="screen-control bg-opacity-0 bg-green-400"
-				/>
-			</div>
-		</div>
-		<Console />
-	</div>
-</section>
-
+  <div class="display">
+	<h1 class="neonText">Croplike</h1>
+	<p class="neonText">more info 1/31/22</p>
+  </div>
+  
 <style>
-	@font-face {
-		font-family: PressStart2P;
-		src: url("./../assets/fonts/PressStart2P-Regular.ttf");
-	}
+	.neonText {
+  color: #fff;
+  text-shadow:
+      0 0 7px #fff,
+      0 0 14px #fff,
+      0 0 21px #fff,
+      0 0 42px #f87171,
+      0 0 84px #f87171,
+      0 0 91px #f87171,
+      0 0 105px #f87171,
+      0 0 140px #f87171;
+}
 
-	@font-face {
-		font-family: ShareTech;
-		src: url("./../assets/fonts/ShareTech-Regular.ttf");
-	}
-
-	.displayOptions {
+.display {
 		align-items: center;
 		background: #1d1d1d;
 		bottom: 0px;
@@ -91,11 +31,5 @@
 		position: absolute;
 		right: 0px;
 		top: 0px;
-	}
-
-	.screen-control {
-		position: relative;
-		margin-bottom: 0.1%;
-		width: 33.3%;
 	}
 </style>
