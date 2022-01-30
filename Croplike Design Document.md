@@ -19,11 +19,11 @@ Farm / Craft
   * Weapons and Armor
   * Mech Pieces
   * Farm Pieces
-Collect resources from farm for fuel and repairs.&nbsp;
-  * Random dungeon based on farm setup. &nbsp;
+Collect resources from farm for fuel and repairs.
+  * Random dungeon based on farm setup.
   * Player only - fast
-Leave farm to gather materials to farm and craft.&nbsp;
-  * Random open map, survival / hunt.&nbsp;
+Leave farm to gather materials to farm and craft.
+  * Random open map, survival / hunt.
   * Player + mech - slower
 ## Targeted platforms
 Browser
@@ -50,7 +50,7 @@ The player will find a massive old mech with a farm growing at the top.
 
 They can leave the farm and hunt for supplies on foot or in a smaller mech-like suits once repaired.
 
-On foot, there are large creatures that are multi tiled. This is the need for the smaller mech-like suits.&nbsp;
+On foot, there are large creatures that are multi tiled. This is the need for the smaller mech-like suits.
 
 The farm, is harvested inside the Goliath farming mech. This is a procedural dungeon based on the farm's make up.
 
@@ -165,7 +165,7 @@ Game
 * These dungeons are on foot only and the layout of the map based on the farming mech setup.
 * Successful completion provides fuel to move the farm and power equipment. A loss will return player to the farm with some of the gathered materials.
 ### Equipment / Part Stats and Stories
-* These items will all have basic utility and features.&nbsp;
+* These items will all have basic utility and features.
 * Every hunted kill, adds to the story of the weapon, allowing for upgrade into another type or the same.
 * Upgrades use harvested parts and therefore increase the danger of using in the forage dungeon
 ### NPC Encounters
