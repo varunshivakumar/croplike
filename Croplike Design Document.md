@@ -177,12 +177,12 @@ Game
 * Browser, no sound.
 ## Code
 * https://github.com/jsrco/croplike
+* https://pixijs.com/
 * https://github.com/ondras/rot.js
 * https://svelte.dev/docs
-* https://threejs.org/
 * https://tailwindcss.com/
 ## Animation
-ROT.js / Three.js
+ROT.js / Pixi.js
 # Schedule
 ## Design Document
  EO December 2021
@@ -201,8 +201,8 @@ ROT.js / Three.js
 * Started Three.js course
 * Install required assets
 ### Feb 28, 2022
-* Site UI
-* Start screen
+* Research spike yielded better Pixi.js results
+* Converted format. Rot.js for map tools.
 ### April 1, 2022 
 * Temp localHost user refactor
 * Basic site to game connections. UI / Wiki
