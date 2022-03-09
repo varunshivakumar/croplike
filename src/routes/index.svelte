@@ -6,7 +6,7 @@
 	import { onMount } from "svelte";
 
 	onMount(() => {
-	console.log(PIXI)
+	console.log(PIXI, "hi, pixi.js here")
 	})
 </script>
 
