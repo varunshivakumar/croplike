@@ -203,6 +203,9 @@ ROT.js / Pixi.js
 ### Feb 28, 2022
 * Research spike yielded better Pixi.js results
 * Converted format. Rot.js for map tools.
+### March 13, 2022
+* Sunset old code
+* Back to three.js due to Pixi fullscreen dev.
 ### April 1, 2022 
 * Temp localHost user refactor
 * Basic site to game connections. UI / Wiki
