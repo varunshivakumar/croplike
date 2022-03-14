@@ -6,7 +6,7 @@
 	let gameOn = false;
 
 	const endGame = () => {
-		location.reload()
+		location.reload();
 	};
 
 	const startGame = () => {
@@ -16,7 +16,7 @@
 		 */
 		// Canvas
 		const canvas = document.querySelector("canvas.webgl");
-
+		canvas.style.display = "block"
 		// Scene
 		const scene = new THREE.Scene();
 
@@ -121,12 +121,12 @@
 </script>
 
 <Deepdwn />
-<canvas class="webgl" />
 {#if gameOn}
-	<p class="link text-red-500" on:click={endGame}>Close</p>
+	<p class="link text-red-400" on:click={endGame}>Close</p>
 {:else}
-	<p class="link text-red-500" on:click={startGame}>Start</p>
+	<p class="link text-red-400" on:click={startGame}>Start</p>
 {/if}
+<canvas class="webgl" />
 
 <style>
 	* {
@@ -134,8 +134,11 @@
 		padding: 0;
 	}
 	.link {
-		color: aliceblue;
-		z-index: 1;
+		cursor: pointer;
+		font-family: ShareTech;
+		margin: 0;
+		padding: 0;
+		z-index: 2;
 	}
 	.link,
 	.webgl {
@@ -143,6 +146,10 @@
 		top: 0;
 		left: 0;
 		outline: none;
+	}
+
+	.webgl{
+		display: none;
 	}
 	html,
 	body {
