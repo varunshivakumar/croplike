@@ -1,9 +1,151 @@
 <script lang="ts">
+	import * as THREE from "three";
+	import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 	import Deepdwn from "$lib/components/deepdwn.svelte";
 
+	let gameOn = false;
+
+	const endGame = () => {
+		location.reload()
+	};
+
 	const startGame = () => {
-	
+		gameOn = true;
+		/**
+		 * Base
+		 */
+		// Canvas
+		const canvas = document.querySelector("canvas.webgl");
+
+		// Scene
+		const scene = new THREE.Scene();
+
+		/**
+		 * Object
+		 */
+		const geometry = new THREE.BoxGeometry(1, 1, 1);
+		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+		const mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+
+		/**
+		 * Sizes
+		 */
+		const sizes = {
+			width: window.innerWidth,
+			height: window.innerHeight,
+		};
+
+		window.addEventListener("resize", () => {
+			// Update sizes
+			sizes.width = window.innerWidth;
+			sizes.height = window.innerHeight;
+
+			// Update camera
+			camera.aspect = sizes.width / sizes.height;
+			camera.updateProjectionMatrix();
+
+			// Update renderer
+			renderer.setSize(sizes.width, sizes.height);
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		});
+
+		/**
+		 * Fullscreen
+		 */
+		window.addEventListener("dblclick", () => {
+			const fullscreenElement =
+				document.fullscreenElement || document.webkitFullscreenElement;
+
+			if (!fullscreenElement) {
+				if (canvas.requestFullscreen) {
+					canvas.requestFullscreen();
+				} else if (canvas.webkitRequestFullscreen) {
+					canvas.webkitRequestFullscreen();
+				}
+			} else {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.webkitExitFullscreen) {
+					document.webkitExitFullscreen();
+				}
+			}
+		});
+
+		/**
+		 * Camera
+		 */
+		// Base camera
+		const camera = new THREE.PerspectiveCamera(
+			75,
+			sizes.width / sizes.height,
+			0.1,
+			100
+		);
+		camera.position.z = 3;
+		scene.add(camera);
+
+		// Controls
+		const controls = new OrbitControls(camera, canvas);
+		controls.enableDamping = true;
+
+		/**
+		 * Renderer
+		 */
+		const renderer = new THREE.WebGLRenderer({
+			canvas: canvas,
+		});
+		renderer.setSize(sizes.width, sizes.height);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+		/**
+		 * Animate
+		 */
+		const clock = new THREE.Clock();
+
+		const tick = () => {
+			const elapsedTime = clock.getElapsedTime();
+
+			// Update controls
+			controls.update();
+
+			// Render
+			renderer.render(scene, camera);
+
+			// Call tick again on the next frame
+			window.requestAnimationFrame(tick);
+		};
+
+		tick();
 	};
 </script>
 
 <Deepdwn />
+<canvas class="webgl" />
+{#if gameOn}
+	<p class="link text-red-500" on:click={endGame}>Close</p>
+{:else}
+	<p class="link text-red-500" on:click={startGame}>Start</p>
+{/if}
+
+<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	.link {
+		color: aliceblue;
+		z-index: 1;
+	}
+	.link,
+	.webgl {
+		position: fixed;
+		top: 0;
+		left: 0;
+		outline: none;
+	}
+	html,
+	body {
+		overflow: hidden;
+	}
+</style>

@@ -177,12 +177,12 @@ Game
 * Browser, no sound.
 ## Code
 * https://github.com/jsrco/croplike
-* https://pixijs.com/
 * https://github.com/ondras/rot.js
 * https://svelte.dev/docs
 * https://tailwindcss.com/
+* https://threejs.org
 ## Animation
-ROT.js / Pixi.js
+ROT.js / Three.js
 # Schedule
 ## Design Document
  EO December 2021
