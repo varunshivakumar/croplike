@@ -2,9 +2,10 @@
 	import * as THREE from "three";
 	import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 	import Deepdwn from "$lib/components/deepdwn.svelte";
+	import { xlink_attr } from "svelte/internal";
 
 	let gameOn = false;
-
+	let INTERSECTED;
 	const endGame = () => {
 		location.reload();
 	};
@@ -16,18 +17,48 @@
 		 */
 		// Canvas
 		const canvas = document.querySelector("canvas.webgl");
-		canvas.style.display = "block"
+		canvas.style.display = "block";
 		// Scene
 		const scene = new THREE.Scene();
+
+		// Mouse work
+		const raycaster = new THREE.Raycaster();
+		const pointer = new THREE.Vector2();
+
+		function onPointerMove(event) {
+			// calculate pointer position in normalized device coordinates
+			// (-1 to +1) for both components
+
+			pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+		}
+
+		window.addEventListener("pointermove", onPointerMove);
 
 		/**
 		 * Object
 		 */
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-		const mesh = new THREE.Mesh(geometry, material);
-		scene.add(mesh);
 
+		const grid = new THREE.Group();
+
+		scene.add(grid);
+		const createGrid = (x, y) => {
+			for (let i = -(y / 2); i < y / 2; i++) {
+				for (let j = -(x / 2); j < x / 2; j++) {
+					const cube = new THREE.Mesh(
+						new THREE.BoxGeometry(1, 0.1, 1),
+						new THREE.MeshBasicMaterial({
+							color: 0xff6699,
+							wireframe: true,
+						})
+					);
+					cube.position.x = j * 1.1;
+					cube.position.z = i * 1.1;
+					grid.add(cube);
+				}
+			}
+		};
+		createGrid(15, 15);
 		/**
 		 * Sizes
 		 */
@@ -82,7 +113,8 @@
 			0.1,
 			100
 		);
-		camera.position.z = 3;
+		camera.position.x = 10.5;
+		camera.position.y = 10.5;
 		scene.add(camera);
 
 		// Controls
@@ -104,8 +136,27 @@
 		const clock = new THREE.Clock();
 
 		const tick = () => {
-			const elapsedTime = clock.getElapsedTime();
+			// update the picking ray with the camera and pointer position
+			raycaster.setFromCamera(pointer, camera);
 
+			// calculate objects intersecting the picking ray
+
+			const intersects = raycaster.intersectObjects(
+				scene.children
+			);
+			if (intersects.length > 0) {
+				if (INTERSECTED != intersects[0].object) {
+					if (INTERSECTED)
+						INTERSECTED.material.wireframe = false
+
+					INTERSECTED = intersects[0].object;
+				}
+			} else {
+				if (INTERSECTED)
+					INTERSECTED.material.wireframe = true
+
+				INTERSECTED = null;
+			}
 			// Update controls
 			controls.update();
 
@@ -115,7 +166,6 @@
 			// Call tick again on the next frame
 			window.requestAnimationFrame(tick);
 		};
-
 		tick();
 	};
 </script>
@@ -148,7 +198,7 @@
 		outline: none;
 	}
 
-	.webgl{
+	.webgl {
 		display: none;
 	}
 	html,
