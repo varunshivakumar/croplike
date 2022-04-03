@@ -2,28 +2,24 @@
 	import * as THREE from "three";
 	import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 	import Deepdwn from "$lib/components/deepdwn.svelte";
-	import { xlink_attr } from "svelte/internal";
 
 	let gameOn = false;
-	let INTERSECTED;
 	const endGame = () => {
 		location.reload();
 	};
-
 	const startGame = () => {
 		gameOn = true;
+
 		/**
 		 * Base
 		 */
-		// Canvas
 		const canvas = document.querySelector("canvas.webgl");
 		canvas.style.display = "block";
-		// Scene
 		const scene = new THREE.Scene();
-
-		// Mouse work
-		const raycaster = new THREE.Raycaster();
 		const pointer = new THREE.Vector2();
+
+		const clock = new THREE.Clock();
+		const raycaster = new THREE.Raycaster();
 
 		function onPointerMove(event) {
 			// calculate pointer position in normalized device coordinates
@@ -33,15 +29,13 @@
 			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 		}
 
-		window.addEventListener("pointermove", onPointerMove);
+		window.addEventListener("mousemove", onPointerMove);
 
 		/**
 		 * Object
 		 */
+		const grid = []
 
-		const grid = new THREE.Group();
-
-		scene.add(grid);
 		const createGrid = (x, y) => {
 			for (let i = -(y / 2); i < y / 2; i++) {
 				for (let j = -(x / 2); j < x / 2; j++) {
@@ -49,16 +43,17 @@
 						new THREE.BoxGeometry(1, 0.1, 1),
 						new THREE.MeshBasicMaterial({
 							color: 0xff6699,
-							wireframe: true,
 						})
 					);
 					cube.position.x = j * 1.1;
 					cube.position.z = i * 1.1;
-					grid.add(cube);
+					grid.push(cube);
+					scene.add(cube)
 				}
 			}
 		};
 		createGrid(15, 15);
+
 		/**
 		 * Sizes
 		 */
@@ -71,11 +66,9 @@
 			// Update sizes
 			sizes.width = window.innerWidth;
 			sizes.height = window.innerHeight;
-
 			// Update camera
 			camera.aspect = sizes.width / sizes.height;
 			camera.updateProjectionMatrix();
-
 			// Update renderer
 			renderer.setSize(sizes.width, sizes.height);
 			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -106,7 +99,6 @@
 		/**
 		 * Camera
 		 */
-		// Base camera
 		const camera = new THREE.PerspectiveCamera(
 			75,
 			sizes.width / sizes.height,
@@ -117,7 +109,6 @@
 		camera.position.y = 10.5;
 		scene.add(camera);
 
-		// Controls
 		const controls = new OrbitControls(camera, canvas);
 		controls.enableDamping = true;
 
@@ -133,30 +124,26 @@
 		/**
 		 * Animate
 		 */
-		const clock = new THREE.Clock();
-
 		const tick = () => {
-			// update the picking ray with the camera and pointer position
+			const elapsedTime = clock.getElapsedTime();
+
+			const raycaster = new THREE.Raycaster();
 			raycaster.setFromCamera(pointer, camera);
 
 			// calculate objects intersecting the picking ray
 
-			const intersects = raycaster.intersectObjects(
-				scene.children
-			);
-			if (intersects.length > 0) {
-				if (INTERSECTED != intersects[0].object) {
-					if (INTERSECTED)
-						INTERSECTED.material.wireframe = false
+			const intersects = raycaster.intersectObjects(scene.children);
 
-					INTERSECTED = intersects[0].object;
-				}
-			} else {
-				if (INTERSECTED)
-					INTERSECTED.material.wireframe = true
-
-				INTERSECTED = null;
+			for (const intersect of intersects) {
+				intersect.object.material.wireframe = true;
 			}
+			for (const gridPiece of grid) {
+	   if(!intersects.find(intersect => intersect.object === gridPiece))
+        {
+			gridPiece.material.wireframe = false
+       }
+			}
+
 			// Update controls
 			controls.update();
 
