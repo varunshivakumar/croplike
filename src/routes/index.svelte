@@ -29,7 +29,7 @@
 			pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
 		}
 
-		window.addEventListener("mousemove", onPointerMove);
+		window.addEventListener("pointermove", onPointerMove);
 
 		/**
 		 * Object
