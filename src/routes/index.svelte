@@ -2,8 +2,11 @@
 	import * as THREE from "three";
 	import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 	import Deepdwn from "$lib/components/deepdwn.svelte";
+	import vertexShader from "$lib/scripts/shaders/vertex.glsl";
 
-	let gameOn = false;
+	console.log(vertexShader)
+
+	let gameOn = false;s
 	const endGame = () => {
 		location.reload();
 	};
